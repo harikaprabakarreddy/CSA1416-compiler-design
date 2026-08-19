@@ -1,0 +1,60 @@
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+
+char production[20][20];
+int n;
+
+void trailing(char ch)
+{
+    int i, len;
+
+    for (i = 0; i < n; i++)
+    {
+        if (production[i][0] == ch)
+        {
+            len = strlen(production[i]);
+
+            if (!isupper(production[i][len - 1]))
+            {
+                printf("%c ", production[i][len - 1]);
+            }
+            else
+            {
+                trailing(production[i][len - 1]);
+            }
+
+            if (len > 3 && !isupper(production[i][len - 2]))
+            {
+                printf("%c ", production[i][len - 2]);
+            }
+        }
+    }
+}
+
+int main()
+{
+    int i;
+    char ch;
+
+    printf("Enter number of productions: ");
+    scanf("%d", &n);
+
+    printf("Enter productions:\n");
+
+    for (i = 0; i < n; i++)
+    {
+        scanf("%s", production[i]);
+    }
+
+    printf("\nEnter non-terminal: ");
+    scanf(" %c", &ch);
+
+    printf("\nTRAILING(%c) = { ", ch);
+
+    trailing(ch);
+
+    printf("}\n");
+
+    return 0;
+}
