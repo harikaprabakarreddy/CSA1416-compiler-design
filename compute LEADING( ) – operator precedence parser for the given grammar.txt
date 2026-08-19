@@ -1,0 +1,51 @@
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+
+char production[20][20];
+int n;
+
+void leading(char ch)
+{
+    int i;
+
+    for (i = 0; i < n; i++)
+    {
+        if (production[i][0] == ch)
+        {
+            if (!isupper(production[i][2]))
+                printf("%c ", production[i][2]);
+            else
+                leading(production[i][2]);
+
+            if (production[i][3] != '\0' &&
+                !isupper(production[i][3]))
+                printf("%c ", production[i][3]);
+        }
+    }
+}
+
+int main()
+{
+    int i;
+    char ch;
+
+    printf("Enter number of productions: ");
+    scanf("%d", &n);
+
+    printf("Enter productions:\n");
+
+    for (i = 0; i < n; i++)
+        scanf("%s", production[i]);
+
+    printf("\nEnter non-terminal: ");
+    scanf(" %c", &ch);
+
+    printf("\nLEADING(%c) = { ", ch);
+
+    leading(ch);
+
+    printf("}\n");
+
+    return 0;
+}
