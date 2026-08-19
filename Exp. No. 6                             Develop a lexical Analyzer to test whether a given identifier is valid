@@ -1,0 +1,47 @@
+#include <stdio.h>
+#include <ctype.h>
+#include <string.h>
+
+int main()
+{
+    char a[100];
+    int flag = 1;
+    int i = 1;
+
+    printf("\nEnter an identifier: ");
+    fgets(a, sizeof(a), stdin);
+
+    /* Remove newline character */
+    a[strcspn(a, "\n")] = '\0';
+
+    /* First character must be alphabet or underscore */
+    if (!isalpha(a[0]) && a[0] != '_')
+    {
+        flag = 0;
+    }
+    else
+    {
+        while (a[i] != '\0')
+        {
+            /* Remaining characters can be alphabet, digit, or underscore */
+            if (!isalnum(a[i]) && a[i] != '_')
+            {
+                flag = 0;
+                break;
+            }
+
+            i++;
+        }
+    }
+
+    if (flag == 1)
+    {
+        printf("\nValid identifier\n");
+    }
+    else
+    {
+        printf("\nNot a valid identifier\n");
+    }
+
+    return 0;
+}
