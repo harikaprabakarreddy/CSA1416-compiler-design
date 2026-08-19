@@ -1,0 +1,153 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+char ip_sym[50];
+char stack[50];
+
+int ip_ptr = 0;
+int st_ptr = 0;
+int len;
+
+void check();
+
+int main()
+{
+    printf("\n\t\tSHIFT REDUCE PARSER\n");
+
+    printf("\nGRAMMAR");
+    printf("\nE -> E+E");
+    printf("\nE -> E/E");
+    printf("\nE -> E*E");
+    printf("\nE -> a");
+    printf("\nE -> b");
+
+    printf("\n\nEnter the input symbol: ");
+    scanf("%49s", ip_sym);
+
+    len = strlen(ip_sym);
+
+    printf("\n\t\tSTACK IMPLEMENTATION TABLE");
+    printf("\n---------------------------------------------------------");
+    printf("\nStack\t\tInput Symbol\t\tAction");
+    printf("\n---------------------------------------------------------");
+
+    printf("\n$\t\t%s$\t\t\t--", ip_sym);
+
+    while (ip_ptr < len)
+    {
+        /* SHIFT */
+        stack[st_ptr++] = ip_sym[ip_ptr];
+        stack[st_ptr] = '\0';
+
+        ip_ptr++;
+
+        printf("\n$%s\t\t%s$\t\t\tShift", stack, ip_sym + ip_ptr);
+
+        check();
+    }
+
+    /* Final reduction */
+    check();
+
+    if (strcmp(stack, "E") == 0 && ip_ptr == len)
+    {
+        printf("\n$E\t\t$\t\t\tACCEPT\n");
+    }
+    else
+    {
+        printf("\n$%s\t\t$\t\t\tREJECT\n", stack);
+    }
+
+    return 0;
+}
+
+/* Reduce the stack */
+void check()
+{
+    int i;
+
+    /* E -> a */
+    if (st_ptr >= 1 && stack[st_ptr - 1] == 'a')
+    {
+        stack[st_ptr - 1] = 'E';
+
+        printf("\n$%s\t\t%s$\t\t\tE->a",
+               stack,
+               ip_sym + ip_ptr);
+
+        return;
+    }
+
+    /* E -> b */
+    if (st_ptr >= 1 && stack[st_ptr - 1] == 'b')
+    {
+        stack[st_ptr - 1] = 'E';
+
+        printf("\n$%s\t\t%s$\t\t\tE->b",
+               stack,
+               ip_sym + ip_ptr);
+
+        return;
+    }
+
+    /* E -> E+E */
+    for (i = 0; i <= st_ptr - 3; i++)
+    {
+        if (stack[i] == 'E' &&
+            stack[i + 1] == '+' &&
+            stack[i + 2] == 'E')
+        {
+            stack[i] = 'E';
+
+            st_ptr = i + 1;
+            stack[st_ptr] = '\0';
+
+            printf("\n$%s\t\t%s$\t\t\tE->E+E",
+                   stack,
+                   ip_sym + ip_ptr);
+
+            return;
+        }
+    }
+
+    /* E -> E*E */
+    for (i = 0; i <= st_ptr - 3; i++)
+    {
+        if (stack[i] == 'E' &&
+            stack[i + 1] == '*' &&
+            stack[i + 2] == 'E')
+        {
+            stack[i] = 'E';
+
+            st_ptr = i + 1;
+            stack[st_ptr] = '\0';
+
+            printf("\n$%s\t\t%s$\t\t\tE->E*E",
+                   stack,
+                   ip_sym + ip_ptr);
+
+            return;
+        }
+    }
+
+    /* E -> E/E */
+    for (i = 0; i <= st_ptr - 3; i++)
+    {
+        if (stack[i] == 'E' &&
+            stack[i + 1] == '/' &&
+            stack[i + 2] == 'E')
+        {
+            stack[i] = 'E';
+
+            st_ptr = i + 1;
+            stack[st_ptr] = '\0';
+
+            printf("\n$%s\t\t%s$\t\t\tE->E/E",
+                   stack,
+                   ip_sym + ip_ptr);
+
+            return;
+        }
+    }
+}
