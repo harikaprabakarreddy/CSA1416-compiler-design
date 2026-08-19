@@ -1,0 +1,44 @@
+#include <stdio.h>
+#include <string.h>
+
+int main()
+{
+    char op1, op2, op, result;
+
+    printf("Enter three address code\n");
+    printf("Example: t1=a+b\n");
+    printf("Enter: ");
+
+    scanf("%c=%c%c%c", &result, &op1, &op, &op2);
+
+    printf("\nAssembly Code:\n");
+
+    printf("MOV AX, %c\n", op1);
+
+    switch (op)
+    {
+        case '+':
+            printf("ADD AX, %c\n", op2);
+            break;
+
+        case '-':
+            printf("SUB AX, %c\n", op2);
+            break;
+
+        case '*':
+            printf("MUL %c\n", op2);
+            break;
+
+        case '/':
+            printf("DIV %c\n", op2);
+            break;
+
+        default:
+            printf("Invalid operator\n");
+            return 0;
+    }
+
+    printf("MOV %c, AX\n", result);
+
+    return 0;
+}
