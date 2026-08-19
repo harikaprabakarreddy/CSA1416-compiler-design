@@ -1,0 +1,100 @@
+#include <stdio.h>
+#include <string.h>
+
+#define SIZE 20
+
+int main()
+{
+    char non_terminal;
+    char alpha[SIZE], beta[SIZE];
+    int num;
+    char production[10][SIZE];
+
+    printf("Enter Number of Productions: ");
+    scanf("%d", &num);
+
+    printf("Enter the grammar as E->E-A|B:\n");
+
+    for (int i = 0; i < num; i++)
+    {
+        scanf("%s", production[i]);
+    }
+
+    for (int i = 0; i < num; i++)
+    {
+        int index = 3;
+
+        printf("\nGRAMMAR: %s", production[i]);
+
+        non_terminal = production[i][0];
+
+        /*
+         * Check whether production is left recursive.
+         * Example: E->E-A|B
+         */
+        if (non_terminal == production[i][index])
+        {
+            printf(" is left recursive.\n");
+
+            /*
+             * Find the alternative after '|'
+             */
+            int j = index;
+
+            while (production[i][j] != '\0' &&
+                   production[i][j] != '|')
+            {
+                j++;
+            }
+
+            if (production[i][j] == '|')
+            {
+                /*
+                 * Alpha = part after E in E->E-A
+                 */
+                int k = 0;
+
+                for (int p = index + 1; p < j; p++)
+                {
+                    alpha[k++] = production[i][p];
+                }
+
+                alpha[k] = '\0';
+
+                /*
+                 * Beta = part after |
+                 */
+                k = 0;
+
+                for (int p = j + 1; production[i][p] != '\0'; p++)
+                {
+                    beta[k++] = production[i][p];
+                }
+
+                beta[k] = '\0';
+
+                printf("\nGrammar without left recursion:\n");
+
+                printf("%c->%s%c'\n",
+                       non_terminal,
+                       beta,
+                       non_terminal);
+
+                printf("%c'->%s%c'|E\n",
+                       non_terminal,
+                       alpha,
+                       non_terminal);
+            }
+            else
+            {
+                printf("Cannot be reduced because no alternative production is present.\n");
+            }
+        }
+        else
+        {
+            printf(" is not left recursive.\n");
+        }
+    }
+
+    return 0;
+}
