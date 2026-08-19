@@ -1,0 +1,89 @@
+#include <stdio.h>
+#include <string.h>
+
+int main()
+{
+    char gram[100];
+    char part1[50], part2[50];
+    char modifiedGram[50], newGram[100];
+
+    int i, j, k = 0, pos = 0;
+
+    printf("Enter Production: S->");
+
+    fgets(gram, sizeof(gram), stdin);
+
+    /* Remove newline */
+    gram[strcspn(gram, "\n")] = '\0';
+
+    /* Separate production into two parts */
+    for (i = 0; gram[i] != '|' && gram[i] != '\0'; i++)
+    {
+        part1[i] = gram[i];
+    }
+
+    part1[i] = '\0';
+
+    if (gram[i] != '|')
+    {
+        printf("Invalid production.\n");
+        return 0;
+    }
+
+    i++;
+
+    for (j = 0; gram[i] != '\0'; i++, j++)
+    {
+        part2[j] = gram[i];
+    }
+
+    part2[j] = '\0';
+
+    /* Find common prefix */
+    i = 0;
+
+    while (part1[i] != '\0' &&
+           part2[i] != '\0' &&
+           part1[i] == part2[i])
+    {
+        modifiedGram[k++] = part1[i];
+        i++;
+    }
+
+    pos = i;
+
+    /* No common prefix */
+    if (pos == 0)
+    {
+        printf("\nNo left factoring is required.\n");
+        return 0;
+    }
+
+    /* Add new non-terminal X */
+    modifiedGram[k++] = 'X';
+    modifiedGram[k] = '\0';
+
+    /* Create new production */
+    j = 0;
+
+    for (i = pos; part1[i] != '\0'; i++)
+    {
+        newGram[j++] = part1[i];
+    }
+
+    newGram[j++] = '|';
+
+    for (i = pos; part2[i] != '\0'; i++)
+    {
+        newGram[j++] = part2[i];
+    }
+
+    newGram[j] = '\0';
+
+    /* Display result */
+    printf("\nGrammar after Left Factoring:\n");
+    printf("S -> %s\n", modifiedGram);
+    printf("X -> %s\n", newGram);
+
+    return 0;
+}
