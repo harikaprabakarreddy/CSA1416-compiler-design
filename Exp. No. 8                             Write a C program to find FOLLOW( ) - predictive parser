@@ -1,0 +1,142 @@
+#include <stdio.h>
+#include <ctype.h>
+#include <string.h>
+
+int limit, x = 0;
+char production[10][10], array[20];
+
+void find_first(char ch);
+void find_follow(char ch);
+void Array_Manipulation(char ch);
+
+int main()
+{
+    int count;
+    char option, ch;
+
+    printf("\nEnter Total Number of Productions:\t");
+    scanf("%d", &limit);
+
+    for (count = 0; count < limit; count++)
+    {
+        printf("\nValue of Production Number [%d]:\t", count + 1);
+        scanf("%s", production[count]);
+    }
+
+    do
+    {
+        x = 0;
+
+        printf("\nEnter production Value to Find Follow:\t");
+        scanf(" %c", &ch);
+
+        find_follow(ch);
+
+        printf("\nFollow Value of %c:\t{ ", ch);
+
+        for (count = 0; count < x; count++)
+        {
+            printf("%c ", array[count]);
+        }
+
+        printf("}\n");
+
+        printf("To Continue, Press Y:\t");
+        scanf(" %c", &option);
+
+    } while (option == 'y' || option == 'Y');
+
+    return 0;
+}
+
+/* Find FOLLOW */
+void find_follow(char ch)
+{
+    int i, j, length;
+
+    /* Start symbol gets $ */
+    if (production[0][0] == ch)
+    {
+        Array_Manipulation('$');
+    }
+
+    for (i = 0; i < limit; i++)
+    {
+        length = strlen(production[i]);
+
+        for (j = 2; j < length; j++)
+        {
+            if (production[i][j] == ch)
+            {
+                /* If there is a symbol after ch */
+                if (production[i][j + 1] != '\0')
+                {
+                    find_first(production[i][j + 1]);
+                }
+
+                /* If ch is at the end of RHS */
+                if (production[i][j + 1] == '\0' &&
+                    ch != production[i][0])
+                {
+                    find_follow(production[i][0]);
+                }
+            }
+        }
+    }
+}
+
+/* Find FIRST */
+void find_first(char ch)
+{
+    int i;
+
+    /* If terminal, add it directly */
+    if (!isupper(ch))
+    {
+        if (ch != '$')
+        {
+            Array_Manipulation(ch);
+        }
+
+        return;
+    }
+
+    for (i = 0; i < limit; i++)
+    {
+        if (production[i][0] == ch)
+        {
+            /* Production X->$ */
+            if (production[i][2] == '$')
+            {
+                continue;
+            }
+
+            /* If first RHS symbol is terminal */
+            if (!isupper(production[i][2]))
+            {
+                Array_Manipulation(production[i][2]);
+            }
+            else
+            {
+                /* If first RHS symbol is non-terminal */
+                find_first(production[i][2]);
+            }
+        }
+    }
+}
+
+/* Add symbol without duplication */
+void Array_Manipulation(char ch)
+{
+    int count;
+
+    for (count = 0; count < x; count++)
+    {
+        if (array[count] == ch)
+        {
+            return;
+        }
+    }
+
+    array[x++] = ch;
+}
